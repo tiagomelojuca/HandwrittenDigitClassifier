@@ -25,13 +25,13 @@ model = load_model('model')
 def predict(vetor):
     # Usa o modelo carregado para fazer a predição
     resultado = model.predict(vetor)[0]
-    messagebox.showinfo("Predição", f"O número desenhado é: {resultado}")
+    messagebox.showinfo("Result", f"The number is : {resultado}")
 
 # Classe do aplicativo de desenho
 class DrawingApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Canvas de Desenho 28x28")
+        self.root.title("Drawing Canvas 28x28")
 
         # Configurações do canvas
         self.canvas_size = 280  # Tamanho do canvas em pixels
@@ -50,10 +50,10 @@ class DrawingApp:
         self.button_frame = tk.Frame(root)
         self.button_frame.pack()
         
-        self.predict_button = tk.Button(self.button_frame, text="Predizer", command=self.predict_image)
+        self.predict_button = tk.Button(self.button_frame, text="Tell the number", command=self.predict_image)
         self.predict_button.pack(side="left")
 
-        self.clear_button = tk.Button(self.button_frame, text="Apagar", command=self.clear_canvas)
+        self.clear_button = tk.Button(self.button_frame, text="Erase", command=self.clear_canvas)
         self.clear_button.pack(side="left")
 
         # Evento de desenho
