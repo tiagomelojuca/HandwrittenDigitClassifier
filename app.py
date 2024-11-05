@@ -7,11 +7,11 @@ import pickle
 from utils import *
 from dense_neural_class import *
 
-# Função para carregar o modelo com caminho absoluto
+# Function to load the model with absolute path
 def load_model(filename):
-    # Pega o diretório atual onde o script está sendo executado
+    # Gets the current directory where the script is being executed
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Constrói o caminho completo do arquivo .pkl
+    # Constructs the full path of the .pkl file
     filepath = os.path.join(current_dir, filename + '.pkl')
     
     with open(filepath, 'rb') as file:
@@ -19,34 +19,34 @@ def load_model(filename):
     
     return model_loaded
 
-# Carrega o modelo ao iniciar o programa
+# Load the model when starting the program
 model = load_model('model')
 
 def predict(vetor):
-    # Usa o modelo carregado para fazer a predição
+    # Uses the loaded model to make a prediction
     resultado = model.predict(vetor)[0]
     messagebox.showinfo("Result", f"The number is : {resultado}")
 
-# Classe do aplicativo de desenho
+# Drawing application class
 class DrawingApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Drawing Canvas 28x28")
 
-        # Configurações do canvas
-        self.canvas_size = 280  # Tamanho do canvas em pixels
-        self.image_size = 28  # Tamanho da imagem para vetorizar
-        self.brush_size = 10  # Tamanho do pincel branco
+        # Canvas settings
+        self.canvas_size = 280  # Canvas size in pixels
+        self.image_size = 28  # Image size for vectorization
+        self.brush_size = 10  # Size of the white brush
 
-        # Canvas para desenhar
+        # Canvas for drawing
         self.canvas = tk.Canvas(root, bg="black", width=self.canvas_size, height=self.canvas_size)
         self.canvas.pack()
 
-        # Criação da imagem e do objeto para desenhar
+        # Creation of the image and the object for drawing
         self.image = Image.new("L", (self.image_size, self.image_size), "black")
         self.draw = ImageDraw.Draw(self.image)
 
-        # Botões de ação
+        # Action buttons
         self.button_frame = tk.Frame(root)
         self.button_frame.pack()
         
@@ -56,34 +56,34 @@ class DrawingApp:
         self.clear_button = tk.Button(self.button_frame, text="Erase", command=self.clear_canvas)
         self.clear_button.pack(side="left")
 
-        # Evento de desenho
+        # Drawing event
         self.canvas.bind("<B1-Motion>", self.paint)
 
     def paint(self, event):
-        # Desenhar na tela e na imagem
+        # Draw on the screen and on the image
         x1, y1 = (event.x - self.brush_size), (event.y - self.brush_size)
         x2, y2 = (event.x + self.brush_size), (event.y + self.brush_size)
         
-        # Desenha no canvas (tela) com pincel branco
+        # Draw on the canvas (screen) with a white brush
         self.canvas.create_oval(x1, y1, x2, y2, fill="white", outline="white")
 
-        # Desenha na imagem de 28x28 para vetorização
+        # Draw on the 28x28 image for vectorization
         scaled_x1, scaled_y1 = (x1 * self.image_size // self.canvas_size), (y1 * self.image_size // self.canvas_size)
         scaled_x2, scaled_y2 = (x2 * self.image_size // self.canvas_size), (y2 * self.image_size // self.canvas_size)
         self.draw.ellipse([scaled_x1, scaled_y1, scaled_x2, scaled_y2], fill="white")
 
     def predict_image(self):
-        # Converter a imagem para um vetor e normalizar os valores (0 a 1)
+        # Convert the image to a vector and normalize the values (0 to 1)
         image_data = np.array(self.image).reshape(1, -1) / 255.0
         predict(image_data)
 
     def clear_canvas(self):
-        # Limpa o canvas e recria uma nova imagem preta
+        # Clears the canvas and creates a new black image
         self.canvas.delete("all")
         self.image = Image.new("L", (self.image_size, self.image_size), "black")
         self.draw = ImageDraw.Draw(self.image)
 
-# Inicialização do aplicativo
+# Application initialization
 root = tk.Tk()
 app = DrawingApp(root)
 root.mainloop()
